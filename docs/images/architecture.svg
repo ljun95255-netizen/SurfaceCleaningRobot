@@ -1,173 +1,206 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700" font-family="'JetBrains Mono', 'SF Mono', 'Menlo', monospace">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 700" font-family="Arial, Helvetica, 'PingFang SC', 'Microsoft YaHei', sans-serif">
   <defs>
-    <marker id="arrow-cyan" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#22d3ee"/>
+    <!-- Arrowheads -->
+    <marker id="arr-blue" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#2563EB"/>
     </marker>
-    <marker id="arrow-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#34d399"/>
+    <marker id="arr-green" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#16A34A"/>
     </marker>
-    <marker id="arrow-violet" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#a78bfa"/>
+    <marker id="arr-purple" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#9333EA"/>
     </marker>
-    <marker id="arrow-amber" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#fbbf24"/>
+    <marker id="arr-amber" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#D97706"/>
     </marker>
-    <linearGradient id="bg-grad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#0f172a"/>
-      <stop offset="100%" stop-color="#020617"/>
-    </linearGradient>
-    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.5"/>
-    </pattern>
+    <marker id="arr-pink" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#DB2777"/>
+    </marker>
+    <marker id="arr-gray" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#64748B"/>
+    </marker>
   </defs>
 
   <!-- Background -->
-  <rect width="1000" height="700" fill="url(#bg-grad)"/>
-  <rect width="1000" height="700" fill="url(#grid)"/>
+  <rect width="1100" height="700" fill="#FFFFFF"/>
+  <rect width="1100" height="700" fill="none" stroke="#E2E8F0" stroke-width="1"/>
 
-  <!-- Title -->
-  <text x="500" y="35" fill="white" font-size="18" font-weight="700" text-anchor="middle">QingLian-I — System Architecture</text>
-  <text x="500" y="55" fill="#94a3b8" font-size="11" text-anchor="middle">Perception → Decision → Execution Pipeline on Embedded Hardware</text>
+  <!-- ============================================================ -->
+  <!--  LAYER BOUNDARIES (dashed background boxes)                  -->
+  <!-- ============================================================ -->
 
-  <!-- ========== PERCEPTION LAYER BOX ========== -->
-  <rect x="30" y="75" width="300" height="175" rx="10" fill="rgba(8,51,68,0.15)" stroke="#22d3ee" stroke-width="1" stroke-dasharray="6,3"/>
-  <text x="45" y="95" fill="#22d3ee" font-size="11" font-weight="600">PERCEPTION — OpenMV Cam H7 Plus</text>
+  <!-- Perception Layer -->
+  <rect x="15" y="50" w="520" h="175" rx="8" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <rect x="15" y="50" w="520" h="24" rx="8" fill="#DBEAFE"/>
+  <text x="30" y="66" fill="#1E40AF" font-size="11" font-weight="700">PERCEPTION — OpenMV Cam H7 Plus</text>
 
-  <!-- Camera Node -->
-  <rect x="60" y="110" width="230" height="40" rx="6" fill="rgba(8,51,68,0.5)" stroke="#22d3ee" stroke-width="1.5"/>
-  <text x="175" y="128" fill="white" font-size="11" font-weight="600" text-anchor="middle">OV5640 Camera</text>
-  <text x="175" y="142" fill="#94a3b8" font-size="8" text-anchor="middle">QVGA 320×240 @ 30fps</text>
+  <!-- Control Layer -->
+  <rect x="15" y="250" w="1070" h="270" rx="8" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <rect x="15" y="250" w="1070" h="24" rx="8" fill="#DCFCE7"/>
+  <text x="30" y="266" fill="#166534" font-size="11" font-weight="700">CONTROL — STM32F103C8T6 @ 72 MHz (ARM Cortex-M3)</text>
 
-  <!-- AI Detector Node -->
-  <rect x="60" y="165" width="230" height="55" rx="6" fill="rgba(8,51,68,0.5)" stroke="#22d3ee" stroke-width="1.5"/>
-  <text x="175" y="183" fill="white" font-size="11" font-weight="600" text-anchor="middle">TensorFlow Lite Detector</text>
-  <text x="175" y="197" fill="#94a3b8" font-size="8" text-anchor="middle">YOLOv8 → ONNX → TFLite int8</text>
-  <text x="175" y="211" fill="#22d3ee" font-size="8" text-anchor="middle">Inference: 20 FPS | Accuracy: 90.27%</text>
+  <!-- Actuation Layer -->
+  <rect x="15" y="545" w="1070" h="140" rx="8" fill="#FFFBEB" stroke="#FDE68A" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <rect x="15" y="545" w="1070" h="24" rx="8" fill="#FEF3C7"/>
+  <text x="30" y="561" fill="#B45309" font-size="11" font-weight="700">ACTUATION — Motor Driver &amp; Mechanical</text>
 
-  <!-- Camera → Detector Arrow -->
-  <line x1="175" y1="150" x2="175" y2="163" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
+  <!-- ============================================================ -->
+  <!--  ARROWS (drawn BEFORE boxes so they render behind)           -->
+  <!-- ============================================================ -->
 
-  <!-- ========== CONTROL LAYER BOX ========== -->
-  <rect x="30" y="275" width="940" height="240" rx="10" fill="rgba(6,78,59,0.08)" stroke="#34d399" stroke-width="1" stroke-dasharray="6,3"/>
-  <text x="45" y="295" fill="#34d399" font-size="11" font-weight="600">CONTROL — STM32F103C8T6 @ 72 MHz (ARM Cortex-M3)</text>
+  <!-- 1. Camera → Detector (vertical, within Perception) -->
+  <line x1="220" y1="140" x2="220" y2="158" stroke="#2563EB" stroke-width="1.5" marker-end="url(#arr-blue)"/>
 
-  <!-- UART Protocol Parser -->
-  <rect x="60" y="315" width="200" height="50" rx="6" fill="rgba(6,78,59,0.4)" stroke="#34d399" stroke-width="1.5"/>
-  <text x="160" y="336" fill="white" font-size="10" font-weight="600" text-anchor="middle">UART Protocol Parser</text>
-  <text x="160" y="352" fill="#94a3b8" font-size="8" text-anchor="middle">Frame: 0xB3...0x5B @ 115200 bps</text>
+  <!-- 2. Detector → Protocol Parser (orthogonal) -->
+  <polyline points="220,225 220,248 395,248 395,298" fill="none" stroke="#2563EB" stroke-width="1.5" marker-end="url(#arr-blue)"/>
 
-  <!-- Detector → Parser Arrow -->
-  <path d="M 175 220 L 175 250 Q 175 265 190 265 L 260 265 Q 275 265 275 280 L 275 300 Q 275 313 260 313 L 210 313" fill="none" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
-  <text x="275" y="292" fill="#94a3b8" font-size="8">UART [x,y,dist,class]</text>
+  <!-- 3. IMU → Kalman (vertical) -->
+  <line x1="140" y1="350" x2="140" y2="378" stroke="#9333EA" stroke-width="1.5" marker-end="url(#arr-purple)"/>
 
-  <!-- MPU6050 IMU -->
-  <rect x="60" y="385" width="160" height="45" rx="6" fill="rgba(30,27,75,0.5)" stroke="#a78bfa" stroke-width="1.5"/>
-  <text x="140" y="404" fill="white" font-size="10" font-weight="600" text-anchor="middle">MPU6050 IMU</text>
-  <text x="140" y="420" fill="#94a3b8" font-size="8" text-anchor="middle">3-Axis Gyro + Accel · I²C</text>
+  <!-- 4. Kalman → PID (orthogonal: right → up → right) -->
+  <polyline points="215,402 275,402 275,418 318,418" fill="none" stroke="#16A34A" stroke-width="1.5" marker-end="url(#arr-green)"/>
 
-  <!-- Kalman Filter -->
-  <rect x="250" y="385" width="150" height="45" rx="6" fill="rgba(6,78,59,0.4)" stroke="#34d399" stroke-width="1.5"/>
-  <text x="325" y="404" fill="white" font-size="10" font-weight="600" text-anchor="middle">Kalman Filter</text>
-  <text x="325" y="420" fill="#94a3b8" font-size="8" text-anchor="middle">Attitude Est. ±2°</text>
+  <!-- 5. Sonar → PID (orthogonal: right → down → right) -->
+  <polyline points="215,470 245,470 245,435 318,435" fill="none" stroke="#9333EA" stroke-width="1.5" marker-end="url(#arr-purple)"/>
 
-  <!-- IMU → Kalman Arrow -->
-  <line x1="220" y1="407" x2="248" y2="407" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#arrow-violet)"/>
+  <!-- 6. Protocol Parser → PID (orthogonal: down → right → down) -->
+  <polyline points="395,355 395,370 455,370 455,388" fill="none" stroke="#2563EB" stroke-width="1.5" marker-end="url(#arr-blue)"/>
 
-  <!-- HC-SR04 Sonar -->
-  <rect x="60" y="448" width="160" height="45" rx="6" fill="rgba(30,27,75,0.5)" stroke="#a78bfa" stroke-width="1.5"/>
-  <text x="140" y="467" fill="white" font-size="10" font-weight="600" text-anchor="middle">HC-SR04 Ultrasonic</text>
-  <text x="140" y="483" fill="#94a3b8" font-size="8" text-anchor="middle">Range: 2–200 cm</text>
+  <!-- 7. PID ↔ Bluetooth (bidirectional, dashed) -->
+  <polyline points="585,418 615,418 615,328 658,328" fill="none" stroke="#DB2777" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arr-pink)"/>
+  <polyline points="658,336 615,336 615,428 587,428" fill="none" stroke="#DB2777" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arr-pink)"/>
 
-  <!-- Cascaded PID -->
-  <rect x="450" y="375" width="210" height="60" rx="6" fill="rgba(6,78,59,0.5)" stroke="#34d399" stroke-width="2"/>
-  <text x="555" y="396" fill="white" font-size="11" font-weight="700" text-anchor="middle">Cascaded PID Controller</text>
-  <text x="555" y="412" fill="#94a3b8" font-size="8" text-anchor="middle">Outer: Angle Loop → Inner: Rate Loop</text>
-  <text x="555" y="426" fill="#34d399" font-size="8" text-anchor="middle">Update Rate: 1 kHz</text>
+  <!-- 8. Bluetooth ↔ Operator (vertical, dashed) -->
+  <line x1="770" y1="360" x2="770" y2="393" stroke="#DB2777" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arr-pink)"/>
+  <line x1="770" y1="397" x2="770" y2="363" stroke="#DB2777" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arr-pink)"/>
 
-  <!-- Parser → PID -->
-  <line x1="260" y1="340" x2="448" y2="405" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
+  <!-- 9. PID → PWM Driver (orthogonal: down → left → down) -->
+  <polyline points="465,465 465,510 200,510 200,583" fill="none" stroke="#16A34A" stroke-width="1.8" marker-end="url(#arr-green)"/>
 
-  <!-- Kalman → PID -->
-  <line x1="400" y1="407" x2="448" y2="407" stroke="#34d399" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+  <!-- 10. PWM Driver → Left Motor (orthogonal: right → down → right) -->
+  <polyline points="305,600 340,600 340,618 368,618" fill="none" stroke="#D97706" stroke-width="1.5" marker-end="url(#arr-amber)"/>
 
-  <!-- Sonar → PID -->
-  <path d="M 160 493 L 160 515 Q 160 530 180 530 L 400 530 Q 420 530 420 510 L 420 460 Q 420 435 448 435" fill="none" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#arrow-violet)"/>
+  <!-- 11. PWM Driver → Right Motor (orthogonal: right → down below motors → right → up) -->
+  <polyline points="305,615 340,615 340,665 690,665 690,606" fill="none" stroke="#D97706" stroke-width="1.5" marker-end="url(#arr-amber)"/>
 
-  <!-- ========== COMMUNICATION BOX ========== -->
-  <rect x="710" y="310" width="230" height="85" rx="10" fill="rgba(59,7,100,0.15)" stroke="#c084fc" stroke-width="1" stroke-dasharray="6,3"/>
-  <text x="725" y="330" fill="#c084fc" font-size="10" font-weight="600">COMMUNICATION</text>
+  <!-- ============================================================ -->
+  <!--  ARROW LABELS (placed near arrows, not overlapping boxes)    -->
+  <!-- ============================================================ -->
 
-  <!-- Bluetooth -->
-  <rect x="730" y="345" width="190" height="38" rx="6" fill="rgba(59,7,100,0.4)" stroke="#c084fc" stroke-width="1.5"/>
-  <text x="825" y="360" fill="white" font-size="10" font-weight="600" text-anchor="middle">Bluetooth HC-05</text>
-  <text x="825" y="375" fill="#94a3b8" font-size="8" text-anchor="middle">Telemetry + RC · UART Bridge</text>
+  <text x="228" y="240" fill="#64748B" font-size="8">UART 115200 bps</text>
+  <text x="405" y="358" fill="#64748B" font-size="8">[x, y, dist, class]</text>
+  <text x="222" y="398" fill="#64748B" font-size="8">gyro+accel</text>
+  <text x="282" y="414" fill="#64748B" font-size="8">IMU fusion</text>
+  <text x="252" y="455" fill="#64748B" font-size="8">obstacle range</text>
+  <text x="625" y="322" fill="#DB2777" font-size="7">telemetry</text>
+  <text x="625" y="430" fill="#DB2777" font-size="7">commands</text>
+  <text x="318" y="505" fill="#64748B" font-size="8">PWM duty cycle</text>
+  <text x="315" y="612" fill="#64748B" font-size="7">L PWM</text>
+  <text x="530" y="660" fill="#64748B" font-size="7">R PWM</text>
 
-  <!-- PID ↔ Bluetooth (bidirectional dashed) -->
-  <line x1="660" y1="390" x2="728" y2="370" stroke="#c084fc" stroke-width="1.2" stroke-dasharray="4,4" marker-end="url(#arrow-cyan)"/>
-  <line x1="728" y1="380" x2="660" y2="405" stroke="#c084fc" stroke-width="1.2" stroke-dasharray="4,4"/>
-  <text x="695" y="365" fill="#c084fc" font-size="7">Status</text>
-  <text x="695" y="415" fill="#c084fc" font-size="7">Commands</text>
+  <!-- ============================================================ -->
+  <!--  COMPONENT BOXES                                            -->
+  <!-- ============================================================ -->
 
-  <!-- Operator -->
-  <rect x="740" y="410" width="170" height="38" rx="6" fill="rgba(15,23,42,0.6)" stroke="#94a3b8" stroke-width="1"/>
-  <text x="825" y="425" fill="white" font-size="10" font-weight="600" text-anchor="middle">Operator</text>
-  <text x="825" y="440" fill="#94a3b8" font-size="8" text-anchor="middle">Wireless RC / Mobile App</text>
+  <!-- PERCEPTION: Camera -->
+  <rect x="120" y="95" w="200" h="45" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.8"/>
+  <text x="220" y="113" fill="#1E3A8A" font-size="11" font-weight="700" text-anchor="middle">OV5640 Camera</text>
+  <text x="220" y="130" fill="#64748B" font-size="8.5" text-anchor="middle">QVGA 320×240 @ 30 fps</text>
 
-  <line x1="825" y1="383" x2="825" y2="408" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3"/>
+  <!-- PERCEPTION: Detector -->
+  <rect x="90" y="165" w="260" h="60" rx="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.8"/>
+  <text x="220" y="184" fill="#1E3A8A" font-size="11" font-weight="700" text-anchor="middle">TensorFlow Lite Detector</text>
+  <text x="220" y="200" fill="#64748B" font-size="8.5" text-anchor="middle">YOLOv8 → ONNX → TFLite Int8</text>
+  <text x="220" y="215" fill="#2563EB" font-size="8.5" font-weight="600" text-anchor="middle">20 FPS · 90.27% mAP@0.5</text>
 
-  <!-- ========== ACTUATION LAYER BOX ========== -->
-  <rect x="30" y="540" width="940" height="135" rx="10" fill="rgba(69,26,3,0.1)" stroke="#fbbf24" stroke-width="1" stroke-dasharray="6,3"/>
-  <text x="45" y="560" fill="#fbbf24" font-size="11" font-weight="600">ACTUATION — Motor Driver &amp; Mechanical</text>
+  <!-- CONTROL: IMU -->
+  <rect x="55" y="305" w="170" h="45" rx="5" fill="#FFFFFF" stroke="#A855F7" stroke-width="1.5"/>
+  <text x="140" y="323" fill="#6B21A8" font-size="10.5" font-weight="700" text-anchor="middle">MPU6050 IMU</text>
+  <text x="140" y="340" fill="#64748B" font-size="8" text-anchor="middle">3-Axis Gyro + Accel · I²C</text>
 
-  <!-- PWM Driver -->
-  <rect x="60" y="580" width="200" height="50" rx="6" fill="rgba(69,26,3,0.4)" stroke="#fbbf24" stroke-width="1.5"/>
-  <text x="160" y="600" fill="white" font-size="10" font-weight="600" text-anchor="middle">L298N Dual H-Bridge</text>
-  <text x="160" y="616" fill="#94a3b8" font-size="8" text-anchor="middle">TIM1 PWM @ 20 kHz · Diff. Drive</text>
+  <!-- CONTROL: Kalman -->
+  <rect x="55" y="380" w="160" h="45" rx="5" fill="#FFFFFF" stroke="#22C55E" stroke-width="1.5"/>
+  <text x="135" y="398" fill="#166534" font-size="10.5" font-weight="700" text-anchor="middle">Kalman Filter</text>
+  <text x="135" y="415" fill="#64748B" font-size="8" text-anchor="middle">Attitude Est. ±2°</text>
 
-  <!-- PID → PWM -->
-  <path d="M 555 435 L 555 470 Q 555 485 540 485 L 200 485 Q 185 485 185 500 L 185 555 Q 185 578 160 578" fill="none" stroke="#34d399" stroke-width="2" marker-end="url(#arrow-green)"/>
-  <text x="555" y="520" fill="#94a3b8" font-size="8">PWM Duty Cycle</text>
+  <!-- CONTROL: Sonar -->
+  <rect x="55" y="450" w="160" h="40" rx="5" fill="#FFFFFF" stroke="#A855F7" stroke-width="1.5"/>
+  <text x="135" y="466" fill="#6B21A8" font-size="10.5" font-weight="700" text-anchor="middle">HC-SR04 Ultrasonic</text>
+  <text x="135" y="481" fill="#64748B" font-size="8" text-anchor="middle">Range: 2–200 cm</text>
 
-  <!-- Left Motor -->
-  <rect x="360" y="600" width="180" height="48" rx="6" fill="rgba(69,26,3,0.4)" stroke="#fbbf24" stroke-width="1.5"/>
-  <text x="450" y="620" fill="white" font-size="11" font-weight="600" text-anchor="middle">Left DC Motor</text>
-  <text x="450" y="638" fill="#94a3b8" font-size="8" text-anchor="middle">JGA25-370 · 100 RPM · 12V</text>
+  <!-- CONTROL: Protocol Parser -->
+  <rect x="285" y="300" w="220" h="55" rx="5" fill="#FFFFFF" stroke="#22C55E" stroke-width="1.5"/>
+  <text x="395" y="319" fill="#166534" font-size="10.5" font-weight="700" text-anchor="middle">UART Protocol Parser</text>
+  <text x="395" y="337" fill="#64748B" font-size="8" text-anchor="middle">Frame: 0xB3 … 0x5B @ 115200 bps</text>
+  <text x="395" y="349" fill="#94A3B8" font-size="7.5" text-anchor="middle">Payload: x · y · distance · class_id</text>
 
-  <!-- Right Motor -->
-  <rect x="620" y="600" width="180" height="48" rx="6" fill="rgba(69,26,3,0.4)" stroke="#fbbf24" stroke-width="1.5"/>
-  <text x="710" y="620" fill="white" font-size="11" font-weight="600" text-anchor="middle">Right DC Motor</text>
-  <text x="710" y="638" fill="#94a3b8" font-size="8" text-anchor="middle">JGA25-370 · 100 RPM · 12V</text>
+  <!-- CONTROL: PID (central node, larger) -->
+  <rect x="320" y="390" w="265" h="70" rx="6" fill="#FFFFFF" stroke="#16A34A" stroke-width="2.2"/>
+  <text x="452" y="412" fill="#166534" font-size="11.5" font-weight="700" text-anchor="middle">Cascaded PID Controller</text>
+  <text x="452" y="430" fill="#64748B" font-size="8.5" text-anchor="middle">Outer Loop: Angle Error → Desired Rate</text>
+  <text x="452" y="446" fill="#64748B" font-size="8.5" text-anchor="middle">Inner Loop: Rate Error → Motor PWM</text>
+  <text x="452" y="456" fill="#16A34A" font-size="7.5" font-weight="600" text-anchor="middle">Update Rate: 1 kHz</text>
 
-  <!-- PWM → Left Motor -->
-  <line x1="260" y1="605" x2="358" y2="624" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#arrow-amber)"/>
-  <!-- PWM → Right Motor -->
-  <line x1="260" y1="615" x2="618" y2="624" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#arrow-amber)"/>
+  <!-- CONTROL: Bluetooth -->
+  <rect x="660" y="305" w="220" h="50" rx="5" fill="#FFFFFF" stroke="#EC4899" stroke-width="1.5"/>
+  <text x="770" y="325" fill="#BE185D" font-size="10.5" font-weight="700" text-anchor="middle">Bluetooth HC-05</text>
+  <text x="770" y="343" fill="#64748B" font-size="8" text-anchor="middle">Telemetry + RC · UART Bridge</text>
 
-  <!-- ========== LEGEND ========== -->
-  <rect x="740" y="75" width="220" height="185" rx="8" fill="rgba(15,23,42,0.6)" stroke="#1e293b" stroke-width="1"/>
-  <text x="850" y="95" fill="white" font-size="11" font-weight="600" text-anchor="middle">Legend</text>
+  <!-- CONTROL: Operator -->
+  <rect x="660" y="395" w="220" h="40" rx="5" fill="#FFFFFF" stroke="#94A3B8" stroke-width="1.2"/>
+  <text x="770" y="411" fill="#475569" font-size="10.5" font-weight="700" text-anchor="middle">Operator</text>
+  <text x="770" y="426" fill="#94A3B8" font-size="8" text-anchor="middle">Wireless RC / Mobile App</text>
 
-  <rect x="755" y="108" width="16" height="10" rx="2" fill="rgba(8,51,68,0.6)" stroke="#22d3ee" stroke-width="1"/>
-  <text x="780" y="116" fill="#94a3b8" font-size="9">Perception (OpenMV)</text>
+  <!-- ACTUATION: PWM Driver -->
+  <rect x="105" y="583" w="200" h="50" rx="5" fill="#FFFFFF" stroke="#F59E0B" stroke-width="1.8"/>
+  <text x="205" y="603" fill="#B45309" font-size="10.5" font-weight="700" text-anchor="middle">L298N Dual H-Bridge</text>
+  <text x="205" y="621" fill="#64748B" font-size="8" text-anchor="middle">TIM1 PWM @ 20 kHz · Diff. Drive</text>
 
-  <rect x="755" y="126" width="16" height="10" rx="2" fill="rgba(6,78,59,0.6)" stroke="#34d399" stroke-width="1"/>
-  <text x="780" y="134" fill="#94a3b8" font-size="9">Control (STM32)</text>
+  <!-- ACTUATION: Left Motor -->
+  <rect x="370" y="600" w="180" h="48" rx="5" fill="#FFFFFF" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="460" y="619" fill="#B45309" font-size="10.5" font-weight="700" text-anchor="middle">Left DC Motor</text>
+  <text x="460" y="638" fill="#64748B" font-size="8" text-anchor="middle">JGA25-370 · 100 RPM · 12V</text>
 
-  <rect x="755" y="144" width="16" height="10" rx="2" fill="rgba(30,27,75,0.6)" stroke="#a78bfa" stroke-width="1"/>
-  <text x="780" y="152" fill="#94a3b8" font-size="9">Sensors</text>
+  <!-- ACTUATION: Right Motor -->
+  <rect x="600" y="600" w="180" h="48" rx="5" fill="#FFFFFF" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="690" y="619" fill="#B45309" font-size="10.5" font-weight="700" text-anchor="middle">Right DC Motor</text>
+  <text x="690" y="638" fill="#64748B" font-size="8" text-anchor="middle">JGA25-370 · 100 RPM · 12V</text>
 
-  <rect x="755" y="162" width="16" height="10" rx="2" fill="rgba(59,7,100,0.6)" stroke="#c084fc" stroke-width="1"/>
-  <text x="780" y="170" fill="#94a3b8" font-size="9">Communication</text>
+  <!-- ============================================================ -->
+  <!--  LEGEND (top-right corner)                                   -->
+  <!-- ============================================================ -->
+  <rect x="880" y="55" w="200" h="180" rx="6" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="980" y="73" fill="#334155" font-size="10" font-weight="700" text-anchor="middle">Legend</text>
 
-  <rect x="755" y="180" width="16" height="10" rx="2" fill="rgba(69,26,3,0.6)" stroke="#fbbf24" stroke-width="1"/>
-  <text x="780" y="188" fill="#94a3b8" font-size="9">Actuation</text>
+  <rect x="895" y="84" w="20" h="10" rx="2" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1.2"/>
+  <text x="923" y="93" fill="#475569" font-size="9">Perception (OpenMV)</text>
 
-  <rect x="755" y="198" width="16" height="10" rx="2" fill="rgba(15,23,42,0.6)" stroke="#94a3b8" stroke-width="1"/>
-  <text x="780" y="206" fill="#94a3b8" font-size="9">External</text>
+  <rect x="895" y="101" w="20" h="10" rx="2" fill="#FFFFFF" stroke="#22C55E" stroke-width="1.2"/>
+  <text x="923" y="110" fill="#475569" font-size="9">Control (STM32)</text>
 
-  <line x1="755" y1="222" x2="771" y2="222" stroke="#c084fc" stroke-width="1" stroke-dasharray="3,3"/>
-  <text x="780" y="225" fill="#94a3b8" font-size="9">Wireless Link</text>
+  <rect x="895" y="118" w="20" h="10" rx="2" fill="#FFFFFF" stroke="#A855F7" stroke-width="1.2"/>
+  <text x="923" y="127" fill="#475569" font-size="9">Sensors</text>
 
-  <line x1="755" y1="238" x2="771" y2="238" stroke="#22d3ee" stroke-width="1.5"/>
-  <text x="780" y="241" fill="#94a3b8" font-size="9">Data Flow</text>
+  <rect x="895" y="135" w="20" h="10" rx="2" fill="#FFFFFF" stroke="#EC4899" stroke-width="1.2"/>
+  <text x="923" y="144" fill="#475569" font-size="9">Communication</text>
+
+  <rect x="895" y="152" w="20" h="10" rx="2" fill="#FFFFFF" stroke="#F59E0B" stroke-width="1.2"/>
+  <text x="923" y="161" fill="#475569" font-size="9">Actuation</text>
+
+  <rect x="895" y="169" w="20" h="10" rx="2" fill="#FFFFFF" stroke="#94A3B8" stroke-width="1.2"/>
+  <text x="923" y="178" fill="#475569" font-size="9">External</text>
+
+  <!-- Wire type examples -->
+  <line x1="895" y1="195" x2="915" y2="195" stroke="#2563EB" stroke-width="1.5"/>
+  <text x="923" y="198" fill="#475569" font-size="9">Data Flow</text>
+
+  <line x1="895" y1="212" x2="915" y2="212" stroke="#DB2777" stroke-width="1.2" stroke-dasharray="4,3"/>
+  <text x="923" y="215" fill="#475569" font-size="9">Wireless Link</text>
+
+  <!-- ============================================================ -->
+  <!--  SUBTITLE                                                   -->
+  <!-- ============================================================ -->
+  <text x="550" y="25" fill="#334155" font-size="15" font-weight="700" text-anchor="middle">QingLian-I — System Architecture</text>
+  <text x="550" y="42" fill="#94A3B8" font-size="10" text-anchor="middle">Perception → Decision → Execution Pipeline on Embedded Hardware</text>
+
 </svg>

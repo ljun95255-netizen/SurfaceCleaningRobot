@@ -36,8 +36,6 @@ Built as an independent undergraduate research project (2024–2025), this repos
 
 ![System Architecture](docs/images/architecture.svg)
 
-> **Above**: Complete data flow from camera capture through AI inference, sensor fusion, PID control, to motor actuation. Hover for component details; click to view full SVG.
-
 ### Perception Pipeline
 
 1. **Training**: YOLOv8s trained on thousands of self-annotated images with Mosaic + synthetic reflection augmentation
