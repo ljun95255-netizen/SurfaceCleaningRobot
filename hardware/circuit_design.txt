@@ -1,0 +1,17 @@
+电路设计概要:
+11.4进 5V出
+
+主控 c8t6
+陀螺仪mpu6050，或者9250 (PC13 PC14)
+摄像头供电以及通讯（usart2 PA2 PA3）
+adc测压（PA4 PA5 PA6）
+超声波测距(PA7 PA8)
+无线电模块（usart1 PA10 PA11）
+电调（pwm Tim4 CH3 PB8 CH4 PB9 ）
+传送带舵机（pwm Tim4 CH2 PB7）
+接收机 （CH1 PA0 CH2 PA1 CH3 PB10 CH4 PB11）
+摄像头舵机（由openmv控制）
+主控掉电保护   
+led PB5
+
+

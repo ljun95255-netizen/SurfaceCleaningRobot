@@ -1,0 +1,56 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.so
+*.egg-info/
+dist/
+build/
+
+# Compiled models / weights
+*.tflite
+*.onnx
+*.h5
+*.pt
+*.pth
+*.weights
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Keil / STM32
+*.uvguix.*
+*.uvoptx
+*.uvprojx
+JLinkLog.txt
+*.bin
+*.hex
+*.o
+*.d
+*.crf
+*.lnp
+*.dep
+*.iex
+*.htm
+*.map
+*.build_log.htm
+*.lst
+
+# Build artifacts
+OBJ/
+Listings/
+DebugConfig/
+RTE/
+
+# Data / media
+*.mp4
+*.pptx
+*.docx
