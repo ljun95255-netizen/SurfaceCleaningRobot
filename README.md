@@ -34,45 +34,70 @@ Built as an independent undergraduate research project (2024–2025), this repos
 
 ---
 
-## System Architecture
+```mermaid
+graph TB
+    %% ===== STYLES =====
+    classDef perception fill:#083344,stroke:#22d3ee,stroke-width:2px,color:#cffafe
+    classDef control fill:#064e3b,stroke:#34d399,stroke-width:2px,color:#d1fae5
+    classDef sensor fill:#1e1b4b,stroke:#a78bfa,stroke-width:1.5px,color:#e0e7ff
+    classDef comm fill:#3b0764,stroke:#c084fc,stroke-width:1.5px,color:#f3e8ff
+    classDef actuator fill:#451a03,stroke:#fbbf24,stroke-width:2px,color:#fef3c7
+    classDef external fill:#0f172a,stroke:#94a3b8,stroke-width:1px,color:#e2e8f0
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                     Water Surface                        │
-│  ┌─────────────┐   ┌─────────────┐   ┌──────────────┐   │
-│  │   Floating   │   │   Floating   │   │    Other      │   │
-│  │   Debris A   │   │   Debris B   │   │   Objects     │   │
-│  └──────┬───────┘   └──────┬───────┘   └──────┬───────┘   │
-└─────────┼──────────────────┼──────────────────┼───────────┘
-          │                  │                  │
-     ┌────▼──────────────────▼──────────────────▼────┐
-     │            OpenMV Cam H7 Plus                  │
-     │   ┌──────────────────────────────────────┐     │
-     │   │  TensorFlow Lite Object Detector     │     │
-     │   │  (YOLOv8 → ONNX → TFLite quantized)  │     │
-     │   └──────────────┬───────────────────────┘     │
-     │                  │ UART (115200 bps)            │
-     └──────────────────┼────────────────────────────┘
-                        │ [x, y, distance, class]
-     ┌──────────────────▼────────────────────────────┐
-     │            STM32F103C8T6 (Main Controller)     │
-     │  ┌──────────┐ ┌──────────┐ ┌───────────────┐  │
-     │  │ MPU6050  │ │ Kalman   │ │ Cascaded PID  │  │
-     │  │ IMU (I²C)│→│ Filter   │→│ (Angle+Rate)  │  │
-     │  └──────────┘ └──────────┘ └───────┬───────┘  │
-     │  ┌──────────┐ ┌──────────┐         │          │
-     │  │ HC-SR04  │ │ Bluetooth│         │          │
-     │  │ Sonar    │ │ HC-05    │         │          │
-     │  └──────────┘ └──────────┘         │          │
-     └────────────────────────────────────┼──────────┘
-                                          │ PWM
-     ┌────────────────────────────────────▼──────────┐
-     │          Motor Driver (L298N / TB6612)          │
-     │  ┌──────────┐              ┌──────────┐        │
-     │  │  Left    │              │  Right   │        │
-     │  │  Motor   │              │  Motor   │        │
-     │  └──────────┘              └──────────┘        │
-     └────────────────────────────────────────────────┘
+    %% ===== PERCEPTION LAYER =====
+    subgraph PERCEPTION["🔍 Perception — OpenMV Cam H7 Plus"]
+        direction TB
+        CAM["📷 OV5640 Camera<br/>QVGA 320×240"]:::perception
+        DETECT["🧠 TensorFlow Lite Detector<br/>YOLOv8 → ONNX → TFLite int8<br/>20 FPS inference"]:::perception
+        CAM --> DETECT
+    end
+
+    %% ===== CONTROL LAYER =====
+    subgraph CONTROL["⚙️ Control — STM32F103C8T6 @ 72 MHz"]
+        direction TB
+        
+        subgraph SENSORS["Sensors"]
+            IMU["MPU6050 IMU<br/>3-axis Gyro + Accel<br/>I²C @ 400 kHz"]:::sensor
+            SONAR["HC-SR04 Ultrasonic<br/>2–200 cm range<br/>Obstacle detection"]:::sensor
+        end
+
+        subgraph FUSION["Sensor Fusion"]
+            KALMAN["Kalman Filter<br/>Attitude estimation<br/>±2° accuracy"]:::control
+            IMU --> KALMAN
+        end
+
+        subgraph DECISION["Decision & Control"]
+            PID["Cascaded PID Controller<br/>Outer: Angle → Inner: Rate<br/>1 kHz update loop"]:::control
+            PROTO["UART Protocol Parser<br/>Frame: 0xB3..0x5B<br/>x, y, distance, class"]:::control
+        end
+
+        DETECT -->|"UART 115200 bps<br/>[x y distance class]"| PROTO
+        PROTO --> PID
+        KALMAN --> PID
+        SONAR --> PID
+    end
+
+    %% ===== COMMUNICATION =====
+    subgraph COMMS["📡 Communication"]
+        BT["Bluetooth HC-05<br/>Telemetry + Remote Control<br/>UART transparent"]:::comm
+    end
+    
+    PID <-.->|"Status & Telemetry"| BT
+
+    %% ===== ACTUATION LAYER =====
+    subgraph ACTUATION["🔧 Actuation — Motor Driver"]
+        PWM["L298N Dual H-Bridge<br/>TIM1 PWM @ 20 kHz<br/>Differential Drive"]:::actuator
+        MOTOR_L["🛞 Left DC Motor<br/>JGA25-370<br/>100 RPM"]:::actuator
+        MOTOR_R["🛞 Right DC Motor<br/>JGA25-370<br/>100 RPM"]:::actuator
+        
+        PID -->|"PWM duty cycle"| PWM
+        PWM --> MOTOR_L
+        PWM --> MOTOR_R
+    end
+
+    %% ===== EXTERNAL =====
+    USER["👤 Operator<br/>Wireless RC / App"]:::external
+    USER <-.->|"2.4 GHz RC"| BT
 ```
 
 ### Perception Pipeline
