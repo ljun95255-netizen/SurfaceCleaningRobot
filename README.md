@@ -24,7 +24,7 @@
 
 The system runs a YOLOv8-based floating-debris detector on the edge, communicates detections to an STM32F103 microcontroller via UART, and executes coordinated motion control through cascaded PID loops with IMU-based attitude stabilization. The model was trained on thousands of self-annotated images with Mosaic and synthetic wave-reflection augmentation, then pruned, quantised, and deployed to embedded hardware.
 
-This project established the first end-to-end **perception → decision → execution** pipeline later reused and extended in the [Rustbuster](https://github.com/ljun95255-netizen) autonomous inspection system.
+This project established the first end-to-end **perception → decision → execution** pipeline later reused and extended in the Rustbuster autonomous inspection system.
 
 ### Highlights
 
@@ -200,7 +200,7 @@ model.export(format='onnx', imgsz=320, int8=True)
 
 系统在 OpenMV 摄像头上运行 YOLOv8 目标检测模型，通过 UART 将检测结果传输至 STM32F103 主控芯片，经级联 PID 控制算法驱动双电机差速转向，实现自主巡航与定点打捞。模型基于数千张自标注图像训练，采用 Mosaic + 合成水面反光噪声数据增强，经剪枝与 int8 量化后部署至边缘硬件。
 
-本项目建立了首个端到端 **感知 → 决策 → 执行** 系统 pipeline，后续被 [Rustbuster](https://github.com/ljun95255-netizen) 自主检测平台复用与扩展。
+本项目建立了首个端到端 **感知 → 决策 → 执行** 系统 pipeline，后续被 Rustbuster 自主检测平台复用与扩展。
 
 ### 核心技术
 
