@@ -6,6 +6,7 @@
 [![Platform](https://img.shields.io/badge/Platform-STM32%20%7C%20OpenMV-orange)]()
 [![Detection](https://img.shields.io/badge/Detection-YOLOv8%20%7C%20TensorFlow%20Lite-brightgreen)]()
 [![Accuracy](https://img.shields.io/badge/Accuracy-90.27%25-success)]()
+[![Timeline](https://img.shields.io/badge/Timeline-Apr%202024%20%E2%80%93%20Feb%202025-lightgrey)]()
 
 **An autonomous water-surface robot for floating debris detection and collection,**
 
@@ -19,17 +20,19 @@
 
 ## Overview
 
-**QingLian-I** (清涟一号) is an autonomous surface cleaning robot that integrates **computer vision**, **embedded real-time control**, and **mechanical collection** to detect and retrieve floating debris on water surfaces. The system runs a YOLOv8-based object detector on the edge (OpenMV / Raspberry Pi), communicates detections to an STM32F103 microcontroller via UART, and executes coordinated motion control through cascaded PID loops with IMU-based attitude stabilization.
+**QingLian-I** (清涟一号, also known as "水域守护者") is an autonomous surface cleaning robot independently built as an undergraduate research project (Apr 2024 – Feb 2025). It integrates **computer vision**, **embedded real-time control**, and **mechanical collection** to detect and retrieve floating debris on water surfaces.
 
-Built as an independent undergraduate research project (2024–2025), this repository demonstrates the complete **perception → decision → execution** pipeline on a resource-constrained embedded platform.
+The system runs a YOLOv8-based floating-debris detector on the edge, communicates detections to an STM32F103 microcontroller via UART, and executes coordinated motion control through cascaded PID loops with IMU-based attitude stabilization. The model was trained on thousands of self-annotated images with Mosaic and synthetic wave-reflection augmentation, then pruned, quantised, and deployed to embedded hardware.
+
+This project established the first end-to-end **perception → decision → execution** pipeline later reused and extended in the [Rustbuster](https://github.com/ljun95255-netizen) autonomous inspection system.
 
 ### Highlights
 
-- **90.27% detection accuracy @ 20 FPS** on a custom-annotated floating-debris dataset
-- **Edge-native deployment**: YOLOv8 → ONNX export → TensorFlow Lite conversion for OpenMV
-- **Data augmentation pipeline**: Mosaic augmentation + synthetic water-reflection noise (Torchvision + Albumentations)
-- **Sensor fusion**: MPU6050 6-axis IMU with Kalman filtering for attitude estimation
-- **Cascaded PID control**: outer angle loop + inner rate loop for stable differential-drive maneuvering
+- **90.27% detection accuracy @ 20 FPS** under wave-reflection noise — custom-annotated floating-debris dataset
+- **Full edge deployment**: YOLOv8s → ONNX → TensorFlow Lite (int8), deployed to OpenMV Cam H7 Plus
+- **Data augmentation**: Mosaic + synthetic water-reflection noise via Torchvision + Albumentations
+- **Sensor fusion**: MPU6050 6-axis IMU with Kalman filtering (±2° attitude estimation)
+- **Cascaded PID**: outer angle loop + inner rate loop for stable differential-drive maneuvering @ 1 kHz
 - **Multi-modal communication**: Bluetooth telemetry, wireless RC, UART camera link
 
 ---
@@ -38,10 +41,10 @@ Built as an independent undergraduate research project (2024–2025), this repos
 
 ### Perception Pipeline
 
-1. **Training**: YOLOv8s trained on thousands of self-annotated images with Mosaic + synthetic reflection augmentation
-2. **Export**: PyTorch → ONNX → TensorFlow Lite (int8 quantization)
+1. **Training**: YOLOv8s trained on thousands of self-annotated floating-debris images; Mosaic + synthetic reflection augmentation for robustness under glare and wave conditions
+2. **Export**: PyTorch → ONNX → TensorFlow Lite with int8 quantization
 3. **Deployment**: TFLite model runs on OpenMV Cam H7 Plus at QVGA (320×240), achieving ~20 FPS inference
-4. **Communication**: Detected object centroids `(x, y)` and estimated distance sent to STM32 via UART
+4. **Communication**: Detected object centroids `(x, y)` and estimated distance sent to STM32 via UART at 115200 bps
 
 ### Control Pipeline
 
@@ -62,6 +65,21 @@ Built as an independent undergraduate research project (2024–2025), this repos
 | **Control Loop Frequency** | 1 kHz (IMU read + PID update) |
 | **Attitude Estimation Accuracy** | ±2° (Kalman-filtered MPU6050) |
 | **Obstacle Detection Range** | 2–200 cm (HC-SR04 ultrasonic) |
+| **Battery Life** | ~30 min (11.4V / 3S Li-ion, full load) |
+
+---
+
+## Project Context
+
+This project was the **first complete hardware + perception + edge-deployment system** built by the author, establishing patterns later reused in the Rustbuster autonomous inspection platform:
+
+| Capability Established | Reused In Rustbuster |
+|------------------------|---------------------|
+| End-to-end perception → decision → execution pipeline | Core system architecture |
+| Edge model deployment (training → pruning → quantization → ONNX) | Edge AI layer |
+| Sensor fusion with Kalman filtering | Multimodal perception module |
+| Cascaded PID for differential-drive control | Motion control subsystem |
+| UART-based camera-to-MCU communication protocol | Sensor interface design |
 
 ---
 
@@ -90,14 +108,14 @@ SurfaceCleaningRobot/
 │   ├── design.jpg                    # Mechanical / PCB design drawing
 │   └── circuit_design.txt            # Pin mapping reference
 └── docs/
-    └── images/                       # System photos & diagrams
+    └── images/                       # System architecture diagram (SVG)
 ```
 
 ---
 
 ## Quick Start
 
-> **Note**: This repository showcases the core algorithms and system architecture. Full model weights, training datasets, and complete Keil MDK project files are not included. The provided code demonstrates the engineering patterns sufficient for understanding and re-implementing the approach.
+> **Note**: This repository showcases the core algorithms and system architecture. Full model weights, training datasets, and complete Keil MDK project files are **not included**. The provided code demonstrates the engineering patterns sufficient for understanding and re-implementing the approach.
 
 ### Prerequisites
 
@@ -178,26 +196,34 @@ model.export(format='onnx', imgsz=320, int8=True)
 
 ### 项目简介
 
-**清涟一号** 是一款基于边缘AI视觉的自主式水面清洁机器人，集成计算机视觉、嵌入式实时控制与机械打捞装置，用于自动检测和收集水面漂浮垃圾。系统在 OpenMV 摄像头上运行 YOLOv8 目标检测模型，通过 UART 将检测结果传输至 STM32F103 主控芯片，经级联 PID 控制算法驱动双电机差速转向，实现自主巡航与定点打捞。
+**清涟一号**（又名"水域守护者"）是一款独立完成的本科科研项目（2024年4月 – 2025年2月），集成**计算机视觉**、**嵌入式实时控制**与**机械打捞装置**，用于自动检测和收集水面漂浮垃圾。
+
+系统在 OpenMV 摄像头上运行 YOLOv8 目标检测模型，通过 UART 将检测结果传输至 STM32F103 主控芯片，经级联 PID 控制算法驱动双电机差速转向，实现自主巡航与定点打捞。模型基于数千张自标注图像训练，采用 Mosaic + 合成水面反光噪声数据增强，经剪枝与 int8 量化后部署至边缘硬件。
+
+本项目建立了首个端到端 **感知 → 决策 → 执行** 系统 pipeline，后续被 [Rustbuster](https://github.com/ljun95255-netizen) 自主检测平台复用与扩展。
 
 ### 核心技术
 
-- **边缘AI推理**：YOLOv8s → ONNX → TensorFlow Lite (int8量化)，在OpenMV H7 Plus上实现 20 FPS 实时检测
-- **数据增强**：Mosaic + 合成水面反光噪声 (Torchvision + Albumentations)，提升复杂光照下的鲁棒性
+- **边缘AI推理**：YOLOv8s → ONNX → TensorFlow Lite (int8量化)，在 OpenMV H7 Plus 上实现 20 FPS 实时检测
+- **数据增强**：Mosaic + 合成水面反光噪声 (Torchvision + Albumentations)，提升复杂光照与波浪反射条件下的鲁棒性
 - **姿态解算**：MPU6050 六轴IMU + 卡尔曼滤波，±2° 姿态估计精度
-- **级联PID控制**：外环角度环 + 内环角速度环，实现稳定的差速转向控制
-- **多模通信**：蓝牙数传、无线遥控、UART视觉链路
+- **级联PID控制**：外环角度环 + 内环角速度环，1 kHz 更新频率，实现稳定的差速转向
+- **多模通信**：蓝牙数传、无线遥控、UART 视觉链路
 
 ### 性能指标
 
-- 漂浮垃圾检测准确率：**90.27%** (自定义数据集，mAP@0.5)
-- 推理速度：**20 FPS** (OpenMV, QVGA分辨率)
-- 控制回路频率：**1 kHz** (IMU读取 + PID更新)
-- 续航时间：约 30 分钟 (11.4V / 3S锂电池)
+| 指标 | 数值 |
+|------|------|
+| 漂浮垃圾检测准确率 | **90.27%** (自定义数据集，mAP@0.5) |
+| 推理速度 | **20 FPS** (OpenMV, QVGA) |
+| 模型大小 | < 500 KB (int8量化 TFLite) |
+| 控制回路频率 | **1 kHz** (IMU读取 + PID更新) |
+| 姿态估计精度 | ±2° (卡尔曼滤波) |
+| 续航时间 | ~30 分钟 (11.4V / 3S锂电池) |
 
 ### 注意事项
 
-本仓库展示核心算法与系统架构，**完整模型权重、训练数据集、Keil MDK 工程文件未包含在内**。所提供的代码足以理解系统设计思路并进行二次开发，但直接复现完整系统需要自行完成模型训练与嵌入式工程配置。
+本仓库展示核心算法与系统架构，**完整模型权重、训练数据集、Keil MDK 工程文件未包含在内**。所提供的代码足以理解系统设计思路并进行二次开发，但直接复现完整系统需自行完成模型训练与嵌入式工程配置。
 
 ---
 
