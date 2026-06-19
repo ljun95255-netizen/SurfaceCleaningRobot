@@ -37,67 +37,46 @@ Built as an independent undergraduate research project (2024–2025), this repos
 ```mermaid
 graph TB
     %% ===== STYLES =====
-    classDef perception fill:#083344,stroke:#22d3ee,stroke-width:2px,color:#cffafe
+    classDef perception fill:#083344,stroke:#22d3ee,stroke-width:2px,color:#cffafe,font-size:13px
     classDef control fill:#064e3b,stroke:#34d399,stroke-width:2px,color:#d1fae5
     classDef sensor fill:#1e1b4b,stroke:#a78bfa,stroke-width:1.5px,color:#e0e7ff
     classDef comm fill:#3b0764,stroke:#c084fc,stroke-width:1.5px,color:#f3e8ff
     classDef actuator fill:#451a03,stroke:#fbbf24,stroke-width:2px,color:#fef3c7
     classDef external fill:#0f172a,stroke:#94a3b8,stroke-width:1px,color:#e2e8f0
 
-    %% ===== PERCEPTION LAYER =====
-    subgraph PERCEPTION["🔍 Perception — OpenMV Cam H7 Plus"]
-        direction TB
-        CAM["📷 OV5640 Camera<br/>QVGA 320×240"]:::perception
-        DETECT["🧠 TensorFlow Lite Detector<br/>YOLOv8 → ONNX → TFLite int8<br/>20 FPS inference"]:::perception
-        CAM --> DETECT
-    end
+    %% ===== DATA FLOW =====
+    CAM[📷 OV5640 Camera<br/>QVGA 320×240]:::perception
+    DETECT[🧠 TensorFlow Lite Detector<br/>YOLOv8 → ONNX → TFLite int8<br/>Inference: 20 FPS]:::perception
+    CAM --> DETECT
 
-    %% ===== CONTROL LAYER =====
-    subgraph CONTROL["⚙️ Control — STM32F103C8T6 @ 72 MHz"]
-        direction TB
-        
-        subgraph SENSORS["Sensors"]
-            IMU["MPU6050 IMU<br/>3-axis Gyro + Accel<br/>I²C @ 400 kHz"]:::sensor
-            SONAR["HC-SR04 Ultrasonic<br/>2–200 cm range<br/>Obstacle detection"]:::sensor
-        end
+    PROTO[UART Protocol Parser<br/>Frame: 0xB3..0x5B<br/>Payload: x, y, dist, class]:::control
 
-        subgraph FUSION["Sensor Fusion"]
-            KALMAN["Kalman Filter<br/>Attitude estimation<br/>±2° accuracy"]:::control
-            IMU --> KALMAN
-        end
+    DETECT -->|UART 115200 bps| PROTO
 
-        subgraph DECISION["Decision & Control"]
-            PID["Cascaded PID Controller<br/>Outer: Angle → Inner: Rate<br/>1 kHz update loop"]:::control
-            PROTO["UART Protocol Parser<br/>Frame: 0xB3..0x5B<br/>x, y, distance, class"]:::control
-        end
+    IMU[MPU6050 IMU<br/>3-axis Gyro + Accel<br/>I2C @ 400 kHz]:::sensor
+    KALMAN[Kalman Filter<br/>Attitude Estimation<br/>Accuracy: ±2°]:::control
+    IMU --> KALMAN
 
-        DETECT -->|"UART 115200 bps<br/>[x y distance class]"| PROTO
-        PROTO --> PID
-        KALMAN --> PID
-        SONAR --> PID
-    end
+    SONAR[HC-SR04 Ultrasonic<br/>Range: 2–200 cm<br/>Obstacle Detection]:::sensor
 
-    %% ===== COMMUNICATION =====
-    subgraph COMMS["📡 Communication"]
-        BT["Bluetooth HC-05<br/>Telemetry + Remote Control<br/>UART transparent"]:::comm
-    end
-    
-    PID <-.->|"Status & Telemetry"| BT
+    PID[Cascaded PID Controller<br/>Outer: Angle → Inner: Rate<br/>Update Rate: 1 kHz]:::control
+    PROTO --> PID
+    KALMAN --> PID
+    SONAR --> PID
 
-    %% ===== ACTUATION LAYER =====
-    subgraph ACTUATION["🔧 Actuation — Motor Driver"]
-        PWM["L298N Dual H-Bridge<br/>TIM1 PWM @ 20 kHz<br/>Differential Drive"]:::actuator
-        MOTOR_L["🛞 Left DC Motor<br/>JGA25-370<br/>100 RPM"]:::actuator
-        MOTOR_R["🛞 Right DC Motor<br/>JGA25-370<br/>100 RPM"]:::actuator
-        
-        PID -->|"PWM duty cycle"| PWM
-        PWM --> MOTOR_L
-        PWM --> MOTOR_R
-    end
+    BT[Bluetooth HC-05<br/>Telemetry + RC Commands<br/>UART Transparent Bridge]:::comm
+    PID <-.->|Status & Telemetry| BT
 
-    %% ===== EXTERNAL =====
-    USER["👤 Operator<br/>Wireless RC / App"]:::external
-    USER <-.->|"2.4 GHz RC"| BT
+    PWM[L298N Dual H-Bridge<br/>TIM1 PWM @ 20 kHz<br/>Differential Drive]:::actuator
+    MOTOR_L[Left DC Motor<br/>JGA25-370 @ 100 RPM]:::actuator
+    MOTOR_R[Right DC Motor<br/>JGA25-370 @ 100 RPM]:::actuator
+
+    PID -->|PWM Duty Cycle| PWM
+    PWM --> MOTOR_L
+    PWM --> MOTOR_R
+
+    USER[👤 Operator<br/>Wireless RC / App]:::external
+    USER <-.->|2.4 GHz RC| BT
 ```
 
 ### Perception Pipeline
