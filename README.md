@@ -34,13 +34,9 @@ Built as an independent undergraduate research project (2024–2025), this repos
 
 ---
 
-```mermaid
-graph LR
-    A[Camera] --> B[AI Detection] --> C[STM32 Control] --> D[Motors]
-    E[IMU Sensor] --> C
-    F[Ultrasonic] --> C
-    G[Bluetooth] -.-> C
-```
+![System Architecture](docs/images/architecture.svg)
+
+> **Above**: Complete data flow from camera capture through AI inference, sensor fusion, PID control, to motor actuation. Hover for component details; click to view full SVG.
 
 ### Perception Pipeline
 
